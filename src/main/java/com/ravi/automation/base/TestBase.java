@@ -11,28 +11,35 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.ITestContext;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
+
+import com.ravi.automation.utils.TestUtils;
 import com.ravi.automation.utils.WebEventListners;
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
 
 
 public class TestBase {
 	public WebDriver driver;
-	Properties prop;
-	WebDriverWait wait;
-	EventFiringWebDriver ef_Driver;
-	WebEventListners webEventListners;
+	public Properties prop;
+	public WebDriverWait wait;
+	public TestUtils utils;
+	
 	final String CONFIGPATH = System.getProperty("user.dir")+"/src/main/resources/config.properties";
+	public Long waitTime;
+	ExtentReports reports;
+	public ExtentTest test;
 	
 	public TestBase() {
-		initProperties();
-		initdriver();
-		wait = new WebDriverWait(driver, Integer.parseUnsignedInt(prop.getProperty("defaultWait")));
+		
 	}
 	
 	public void initdriver() {
@@ -49,10 +56,49 @@ public class TestBase {
 				driver = browser.setChromeDriver();
 				break;
 		}
-		driver.manage().timeouts().pageLoadTimeout(Long.parseLong(prop.getProperty("defaultWait")), TimeUnit.SECONDS);
 		
 		
-		//return driver;
+		driver.manage().timeouts().pageLoadTimeout(waitTime, TimeUnit.SECONDS);
+	}
+	
+	@BeforeTest
+	public void beforeTest(ITestContext context) {
+		String suiteName = context.getCurrentXmlTest().getSuite().getName();
+		String testName = context.getName();
+		System.out.println("Executing test: " + testName);
+		
+		initProperties();
+		waitTime = Long.parseLong(prop.getProperty("defaultWait"));
+		
+		//Extent Report init
+		reports = new ExtentReports("Extent_" + suiteName + "_" + testName + ".html");
+		test = reports.startTest("Test: " + suiteName + "_" + testName);
+		
+		initdriver();
+		wait = new WebDriverWait(driver, waitTime);
+		utils = new TestUtils(driver);
+		
+		EventFiringWebDriver ef_Driver = new EventFiringWebDriver(this.driver);
+		WebEventListners webEventListners = new WebEventListners(test);
+		ef_Driver.register(webEventListners);
+		driver = ef_Driver;
+	}
+	
+	@BeforeMethod
+	void beforeMethod() {
+		
+	}
+	
+	@AfterMethod
+	void AfterMethod() {
+		
+	}
+	
+	
+	
+	@BeforeSuite
+	void beforeSuite() {
+		
 	}
 	
 	public void initProperties() {
@@ -68,10 +114,16 @@ public class TestBase {
 		}
 	}
 	
-	public WebElement findElement(By locator) {
-		WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
-		((JavascriptExecutor) driver).executeScript("", element);
-		return element;
+	@AfterTest
+	public void afterSuite() {
+		reports.endTest(test);
+		reports.flush();
+		reports.close();
+		
+		if(driver!=null) {
+			driver.quit();
+			System.out.println("driver quits.");
+		}
 	}
 	
 }

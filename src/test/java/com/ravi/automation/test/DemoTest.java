@@ -1,38 +1,38 @@
 package com.ravi.automation.test;
 
-import java.sql.Driver;
 
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
+import java.io.IOException;
+
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.ravi.automation.base.TestBase;
+import com.ravi.automation.pageObjects.LoginPageObjects;
+import com.relevantcodes.extentreports.LogStatus;
 
 public class DemoTest extends TestBase{
 	
+	LoginPageObjects loginPage;
+	
 	public DemoTest() {
-		
 		super();
-		System.out.println("Demo constructor");
+		
 	}
 	
-	@BeforeMethod
-	public void beforeMethod() {
-		System.out.println("DemoTest - Before method.");
+	@BeforeTest
+	void beforeTest() {
+		
 	}
 	
 	@Test
-	public void test1() {
-		System.out.println("DemoTest 1.");
-		driver.get("https://www.google.com");
+	public void loginOMV() throws IOException {
+		driver.get(prop.getProperty("url"));
+		test.log(LogStatus.INFO, "ScreenShot:" + test.addBase64ScreenShot(utils.addScreenShot()));
+		loginPage = new LoginPageObjects(driver,test);
+		loginPage.loginHome();
 	}
 	
-	@AfterTest
-	public void afterTest() {
-		if(driver!=null) {
-			driver.quit();
-			System.out.println("driver quits.");
-		}
-	}
+	
+	
 	
 }

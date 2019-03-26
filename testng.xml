@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="FREE CRM Application Test Automation Test Suite">
-	<test name="Free CRM App Test Cases">
+<suite name="OMV_Automation" parallel="tests" thread-count="3">
+	<listeners>
+		<listener class-name="com.ravi.automation.utils.ExtentManager"></listener>
+	</listeners>
+	<test name="OMV_Login">
 		<classes>
 			<class name="com.ravi.automation.test.DemoTest"></class>
+		</classes>
+	</test>
+	
+	<test name="Google_Test">
+		<classes>
+			<class name="com.ravi.automation.test.GoogleTest"></class>
 		</classes>
 	</test>
 </suite>

@@ -1,13 +1,23 @@
 package com.ravi.automation.utils;
 
+import java.util.Arrays;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
 
 public class WebEventListners implements WebDriverEventListener {
-
+	
+	ExtentTest test;
+	
+	public WebEventListners(ExtentTest test) {
+		this.test = test;
+	}
+	
 	@Override
 	public void beforeAlertAccept(WebDriver driver) {
 		// TODO Auto-generated method stub
@@ -34,15 +44,15 @@ public class WebEventListners implements WebDriverEventListener {
 
 	@Override
 	public void beforeNavigateTo(String url, WebDriver driver) {
-		// TODO Auto-generated method stub
 		System.out.println("Navigating to " + url);
+		test.log(LogStatus.INFO, "Navigating to " + url);
 
 	}
 
 	@Override
 	public void afterNavigateTo(String url, WebDriver driver) {
-		// TODO Auto-generated method stub
 		System.out.println("Navigated to " + url);
+		test.log(LogStatus.INFO, "Navigated to " + url);
 	}
 
 	@Override
@@ -114,7 +124,7 @@ public class WebEventListners implements WebDriverEventListener {
 	@Override
 	public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {
 		// TODO Auto-generated method stub
-
+		test.log(LogStatus.INFO, "Text entered to " + element +": " + Arrays.toString(keysToSend));
 	}
 
 	@Override
@@ -143,7 +153,7 @@ public class WebEventListners implements WebDriverEventListener {
 
 	@Override
 	public void onException(Throwable throwable, WebDriver driver) {
-		// TODO Auto-generated method stub
+		test.log(LogStatus.FAIL, throwable);
 
 	}
 
