@@ -4,6 +4,7 @@
 	<listeners>
 		<listener class-name="com.ravi.automation.utils.ExtentManager"></listener>
 	</listeners>
+	
 	<test name="OMV_Login">
 		<classes>
 			<class name="com.ravi.automation.test.DemoTest"></class>
@@ -15,4 +16,5 @@
 			<class name="com.ravi.automation.test.GoogleTest"></class>
 		</classes>
 	</test>
+	
 </suite>

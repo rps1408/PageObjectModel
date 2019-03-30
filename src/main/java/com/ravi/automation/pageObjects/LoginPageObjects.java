@@ -27,7 +27,7 @@ public class LoginPageObjects extends BasePageObject{
 		PageFactory.initElements(driver, this);
 	}
 	
-	public void loginHome() {
+	public void loginHome(String loginID, String passwd) {
 		try {
 			Assert.assertEquals(findElement(user_label).getText(), "Username");
 			test.log(LogStatus.PASS, "Username label is correct.");
@@ -41,8 +41,8 @@ public class LoginPageObjects extends BasePageObject{
 			test.log(LogStatus.FAIL, e.getMessage());
 			e.printStackTrace();
 		}
-		findElement(user_input).sendKeys("admin");
-		findElement(password_input).sendKeys("XXXXXXXXXX");
+		findElement(user_input).sendKeys(loginID);
+		findElement(password_input).sendKeys(passwd);
 	}
 	
 }

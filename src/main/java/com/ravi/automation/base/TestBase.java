@@ -15,12 +15,18 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITestContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterGroups;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 
+import com.ravi.automation.utils.GlobalValues;
 import com.ravi.automation.utils.TestUtils;
 import com.ravi.automation.utils.WebEventListners;
 import com.relevantcodes.extentreports.ExtentReports;
@@ -29,14 +35,19 @@ import com.relevantcodes.extentreports.ExtentTest;
 
 public class TestBase {
 	public WebDriver driver;
-	public Properties prop;
+	public static Properties prop;
 	public WebDriverWait wait;
 	public TestUtils utils;
 	
-	final String CONFIGPATH = System.getProperty("user.dir")+"/src/main/resources/config.properties";
+	static String CONFIGPATH = GlobalValues.CONFIG;
 	public Long waitTime;
 	ExtentReports reports;
 	public ExtentTest test;
+	String suiteName, testName;
+	
+	static {
+		initProperties();
+	}
 	
 	public TestBase() {
 		
@@ -63,17 +74,32 @@ public class TestBase {
 	
 	@BeforeTest
 	public void beforeTest(ITestContext context) {
-		String suiteName = context.getCurrentXmlTest().getSuite().getName();
-		String testName = context.getName();
-		System.out.println("Executing test: " + testName);
+		suiteName = context.getCurrentXmlTest().getSuite().getName();
+		testName = context.getName();
+		System.out.println("Exectution Test: " + testName);
 		
-		initProperties();
+		reports = new ExtentReports("Extent_" + suiteName + "_" + testName + ".html");
+	}
+	
+	@AfterTest
+	public void AfterTest() {
+		
+	}
+	
+	@BeforeClass
+	public void beforeClass() {
+	}
+	
+	@AfterClass
+	public void afterClass() {
+	}
+	
+	@BeforeMethod
+	public void beforeMethod(ITestContext context) {
 		waitTime = Long.parseLong(prop.getProperty("defaultWait"));
 		
-		//Extent Report init
-		reports = new ExtentReports("Extent_" + suiteName + "_" + testName + ".html");
-		test = reports.startTest("Test: " + suiteName + "_" + testName);
 		
+		test = reports.startTest("Test: " + suiteName + "_" + testName);
 		initdriver();
 		wait = new WebDriverWait(driver, waitTime);
 		utils = new TestUtils(driver);
@@ -84,24 +110,41 @@ public class TestBase {
 		driver = ef_Driver;
 	}
 	
-	@BeforeMethod
-	void beforeMethod() {
-		
+	@AfterMethod(alwaysRun = true)
+	public void AfterMethod() {
+		reports.endTest(test); 
+		reports.flush();
+		System.out.println("Test End");
+		if(driver!=null) {
+			driver.quit();
+			System.out.println("driver quits.");
+		}
 	}
 	
-	@AfterMethod
-	void AfterMethod() {
-		
+	@BeforeGroups
+	public void beforeGroups() {
 	}
 	
-	
+	@AfterGroups
+	public void afterGroups() {
+	}
 	
 	@BeforeSuite
-	void beforeSuite() {
-		
+	public void beforeSuite(ITestContext context) {
+		/*
+		 * suiteName = context.getCurrentXmlTest().getSuite().getName(); testName =
+		 * context.getName(); System.out.println("Exectution Test: " + testName);
+		 */
 	}
 	
-	public void initProperties() {
+	@AfterSuite
+	public void afterSuite() {
+		System.out.println("Closing Test: " + suiteName);
+		reports.close();
+		System.out.println("Report Closed.");
+	}
+	
+	public static void initProperties() {
 		prop = new Properties();
 		try {
 			FileInputStream file = new FileInputStream(CONFIGPATH);
@@ -114,16 +157,6 @@ public class TestBase {
 		}
 	}
 	
-	@AfterTest
-	public void afterSuite() {
-		reports.endTest(test);
-		reports.flush();
-		reports.close();
-		
-		if(driver!=null) {
-			driver.quit();
-			System.out.println("driver quits.");
-		}
-	}
+	
 	
 }
