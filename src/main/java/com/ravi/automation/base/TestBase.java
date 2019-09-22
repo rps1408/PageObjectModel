@@ -68,7 +68,7 @@ public class TestBase {
 				break;
 		}
 		
-		
+		driver.manage().window().maximize();
 		driver.manage().timeouts().pageLoadTimeout(waitTime, TimeUnit.SECONDS);
 	}
 	
