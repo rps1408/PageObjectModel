@@ -38,9 +38,12 @@ public class Browser {
 		return driver;
 	}
 	/*
-	 * WebDriver eventDriver() { WebDriver driver; EventFiringWebDriver ef_Driver =
-	 * new EventFiringWebDriver(this.driver); WebEventListners webEventListners =
-	 * new WebEventListners(test); ef_Driver.register(webEventListners); driver =
-	 * ef_Driver; return driver; }
+	 WebDriver eventDriver() { 
+	 	WebDriver driver; 
+	 	EventFiringWebDriver ef_Driver = new EventFiringWebDriver(this.driver); 
+	 	WebEventListners webEventListners = new WebEventListners(test); 
+	 	ef_Driver.register(webEventListners); 
+	 	driver = ef_Driver; return driver; 
+	 }
 	 */
 }
