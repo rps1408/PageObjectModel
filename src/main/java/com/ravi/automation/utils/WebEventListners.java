@@ -11,8 +11,9 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.relevantcodes.extentreports.ExtentTest;
-import com.relevantcodes.extentreports.LogStatus;
+import com.aventstack.extentreports.ExtentTest;
+
+
 
 public class WebEventListners implements WebDriverEventListener {
 	
@@ -49,14 +50,14 @@ public class WebEventListners implements WebDriverEventListener {
 	@Override
 	public void beforeNavigateTo(String url, WebDriver driver) {
 		System.out.println("Navigating to " + url);
-		test.log(LogStatus.INFO, "Navigating to " + url);
+		test.info("Navigating to " + url);
 
 	}
 
 	@Override
 	public void afterNavigateTo(String url, WebDriver driver) {
 		System.out.println("Navigated to " + url);
-		test.log(LogStatus.INFO, "Navigated to " + url);
+		test.info("Navigated to " + url);
 	}
 
 	@Override
@@ -126,7 +127,7 @@ public class WebEventListners implements WebDriverEventListener {
 	@Override
 	public void afterClickOn(WebElement element, WebDriver driver) {
 		// TODO Auto-generated method stub
-		test.log(LogStatus.INFO, element.getText() + " is clicked.");
+		test.info(element.getText() + " is clicked.");
 	}
 
 	@Override
@@ -138,7 +139,7 @@ public class WebEventListners implements WebDriverEventListener {
 	@Override
 	public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {
 		// TODO Auto-generated method stub
-		test.log(LogStatus.INFO, "Text entered to " + element +": " + Arrays.toString(keysToSend));
+		test.info("Text entered to " + element +": " + Arrays.toString(keysToSend));
 	}
 
 	@Override
@@ -167,7 +168,7 @@ public class WebEventListners implements WebDriverEventListener {
 
 	@Override
 	public void onException(Throwable throwable, WebDriver driver) {
-		test.log(LogStatus.FAIL, throwable);
+		test.info(throwable);
 
 	}
 

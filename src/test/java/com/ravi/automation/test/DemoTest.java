@@ -7,7 +7,6 @@ import org.testng.annotations.Test;
 import com.ravi.automation.base.TestBase;
 import com.ravi.automation.pageObjects.LoginPageObjects;
 import com.ravi.automation.utils.TestUtils;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class DemoTest extends TestBase{
 	
@@ -22,7 +21,7 @@ public class DemoTest extends TestBase{
 		String loginID =  data.get("LoginID");
 		String passwd =  data.get("Password");
 		driver.get(prop.getProperty("url"));
-		test.log(LogStatus.INFO, "ScreenShot:" + test.addBase64ScreenShot(utils.addScreenShot()));
+		//test.log(LogStatus.INFO, "ScreenShot:" + test.addBase64ScreenShot(utils.addScreenShot()));
 		loginPage = new LoginPageObjects(driver,test);
 		loginPage.loginHome(loginID,passwd);
 	}

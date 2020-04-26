@@ -1,8 +1,6 @@
 package com.ravi.automation.utils;
 
 import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,16 +13,21 @@ import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.xml.XmlSuite;
 
-import com.relevantcodes.extentreports.ExtentReports;
-import com.relevantcodes.extentreports.ExtentTest;
-import com.relevantcodes.extentreports.LogStatus;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+
+
 
 public class ExtentManager implements  IReporter {
-	private ExtentReports reports;
+	private ExtentReports extent;
 	private WebDriver driver;
 	@Override //TestNG 
 	public void generateReport(List<XmlSuite> xmlSuite, List<ISuite> suites, String filePath) {
-		reports = new ExtentReports(filePath + File.separator + "Extent.html", true);
+		ExtentSparkReporter reporter = new ExtentSparkReporter(filePath + File.separator + "Extent.html");
+		extent = new ExtentReports();
+		extent.attachReporter(reporter);
 		System.out.println("Report saved to: " + filePath);
 		for (ISuite suite : suites) { 
 			Map<String, ISuiteResult> result = suite.getResults();
@@ -32,26 +35,21 @@ public class ExtentManager implements  IReporter {
 			for (ISuiteResult r : result.values()) {
 				ITestContext context = r.getTestContext();
 
-				buildTestNodes(context.getPassedTests(), LogStatus.PASS);
-				buildTestNodes(context.getFailedTests(), LogStatus.FAIL);
-				buildTestNodes(context.getSkippedTests(), LogStatus.SKIP);
+				buildTestNodes(context.getPassedTests(), Status.PASS);
+				buildTestNodes(context.getFailedTests(), Status.FAIL);
+				buildTestNodes(context.getSkippedTests(), Status.SKIP);
 			}
 		}
 
-		reports.flush();
-		reports.close();
+		extent.flush();
 	}
 
-	private void buildTestNodes(IResultMap tests, LogStatus status) {
+	private void buildTestNodes(IResultMap tests, Status status) {
 		ExtentTest test;
 
 		if (tests.size() > 0) {
 			for (ITestResult result : tests.getAllResults()) {
-				test = reports.startTest(result.getMethod().getMethodName());
-
-				test.setStartedTime(getTime(result.getStartMillis()));
-				test.setEndedTime(getTime(result.getEndMillis()));
-				
+				test = extent.createTest(result.getMethod().getMethodName());
 				driver = (WebDriver) GlobalValues.getGlobalMapvalue(result.getTestName());
 				System.out.println("Key: " + result.getTestName());
 				System.out.println("Driver: " + driver);
@@ -66,16 +64,10 @@ public class ExtentManager implements  IReporter {
 							+ "ed");
 				}
 
-				reports.endTest(test);
 			}
 		}
 	}
 	
-	private Date getTime(long millis) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(millis);
-		return calendar.getTime();
-	}
-	 
+
 
 }

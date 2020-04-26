@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -25,12 +26,13 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.ravi.automation.utils.FileUtility;
 import com.ravi.automation.utils.GlobalValues;
 import com.ravi.automation.utils.TestUtils;
 import com.ravi.automation.utils.WebEventListners;
-import com.relevantcodes.extentreports.ExtentReports;
-import com.relevantcodes.extentreports.ExtentTest;
-import com.relevantcodes.extentreports.LogStatus;
 
 
 public class TestBase {
@@ -41,12 +43,21 @@ public class TestBase {
 	
 	static String CONFIGPATH = GlobalValues.CONFIG;
 	public Long waitTime;
-	ExtentReports reports;
+	ExtentReports extent;
 	public ExtentTest test;
 	String suiteName, testName;
 	
+	public ClassLoader resource;
+	
 	static {
 		initProperties();
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("PROPETRY VALUES: ");
+		prop.forEach((key, value) -> {
+			System.out.println(key + " : " + prop.get(key));
+		});
 	}
 	
 	public TestBase() {
@@ -72,15 +83,18 @@ public class TestBase {
 		///driver.manage().timeouts().pageLoadTimeout(waitTime, TimeUnit.SECONDS);
 	}
 	
+	/**
+	 * @param context
+	 */
 	@BeforeTest
 	public void beforeTest(ITestContext context) {
 		suiteName = context.getCurrentXmlTest().getSuite().getName();
 		testName = context.getName();
 		System.out.println("Exectuting Test: " + testName);
-		
-		reports = new ExtentReports("Extent_" + suiteName + "_" + testName + ".html");
-		
-		test = reports.startTest("Test: " + suiteName + "_" + testName);
+		ExtentSparkReporter reporter = new ExtentSparkReporter("Extent_" + suiteName + "_" + testName + ".html");
+		extent = new ExtentReports();
+		extent.attachReporter(reporter);
+		test = extent.createTest("Test: " + suiteName + "_" + testName);
 		initdriver();
 		wait = new WebDriverWait(driver, waitTime);
 		utils = new TestUtils(driver);
@@ -119,12 +133,8 @@ public class TestBase {
 	public void AfterMethod(ITestResult result) {
 		
 		if (result.getStatus() == ITestResult.FAILURE) {
-			test.log(LogStatus.FAIL, test.addBase64ScreenShot(utils.addScreenShot()));
+			
 		}
-		
-		reports.endTest(test); 
-		reports.flush();
-		
 	}
 	
 	@BeforeGroups
@@ -137,24 +147,22 @@ public class TestBase {
 	
 	@BeforeSuite
 	public void beforeSuite(ITestContext context) {
-		/*
-		 * suiteName = context.getCurrentXmlTest().getSuite().getName(); testName =
-		 * context.getName(); System.out.println("Exectution Test: " + testName);
-		 */
 		waitTime = Long.parseLong(prop.getProperty("defaultWait"));
+		resource = getClass().getClassLoader();
 	}
 	
 	@AfterSuite
 	public void afterSuite() {
 		System.out.println("Closing Test: " + suiteName);
-		reports.close();
+		
 		System.out.println("Report Closed.");
 	}
+	
 	
 	public static void initProperties() {
 		prop = new Properties();
 		try {
-			FileInputStream file = new FileInputStream(CONFIGPATH);
+			FileInputStream file = new FileUtility().getFileAsStream("config.properties");
 			prop.load(file);
 		} catch (FileNotFoundException e) {
 			System.out.println("can't find config.properties");

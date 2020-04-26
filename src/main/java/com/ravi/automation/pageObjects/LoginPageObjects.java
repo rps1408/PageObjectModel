@@ -6,8 +6,9 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
-import com.relevantcodes.extentreports.ExtentTest;
-import com.relevantcodes.extentreports.LogStatus;
+import com.aventstack.extentreports.ExtentTest;
+
+
 
 public class LoginPageObjects extends BasePageObject{
 	
@@ -30,15 +31,15 @@ public class LoginPageObjects extends BasePageObject{
 	public void loginHome(String loginID, String passwd) {
 		try {
 			Assert.assertEquals(driver.findElement(user_label).getText(), "Username");
-			test.log(LogStatus.PASS, "Username label is correct.");
+			test.pass("Username label is correct.");
 			Assert.assertEquals(driver.findElement(password_label).getText(), "Password");
-			test.log(LogStatus.PASS, "Password label is correct.");
+			test.pass("Password label is correct.");
 			Assert.assertEquals(driver.findElement(subit_button).getText(), "Login");
-			test.log(LogStatus.PASS, "Login button label is correct.");
+			test.pass("Login button label is correct.");
 			Assert.assertTrue(driver.findElement(OMV_logo).isDisplayed());
-			test.log(LogStatus.PASS, "Logo is visible.");
+			test.pass("Logo is visible.");
 		} catch (AssertionError e) {
-			test.log(LogStatus.FAIL, e.getMessage());
+			test.fail(e.getMessage());
 			e.printStackTrace();
 		}
 		driver.findElement(user_input).sendKeys(loginID);
