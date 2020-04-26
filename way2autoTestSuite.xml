@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Way2Automation" parallel="tests" thread-count="3">
+	<listeners>
+		<listener class-name="com.ravi.automation.utils.ExtentManager"></listener>
+	</listeners>
+	
+	<test name="Register_New_User">
+		<classes>
+			<class name="com.way2automation.tests.RegisterNewUser"></class>
+		</classes>
+	</test>
+
+</suite>

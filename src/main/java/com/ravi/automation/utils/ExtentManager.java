@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.openqa.selenium.WebDriver;
 import org.testng.IReporter;
 import org.testng.IResultMap;
 import org.testng.ISuite;
@@ -20,7 +21,7 @@ import com.relevantcodes.extentreports.LogStatus;
 
 public class ExtentManager implements  IReporter {
 	private ExtentReports reports;
-	
+	private WebDriver driver;
 	@Override //TestNG 
 	public void generateReport(List<XmlSuite> xmlSuite, List<ISuite> suites, String filePath) {
 		reports = new ExtentReports(filePath + File.separator + "Extent.html", true);
@@ -50,7 +51,11 @@ public class ExtentManager implements  IReporter {
 
 				test.setStartedTime(getTime(result.getStartMillis()));
 				test.setEndedTime(getTime(result.getEndMillis()));
-
+				
+				driver = (WebDriver) GlobalValues.getGlobalMapvalue(result.getTestName());
+				System.out.println("Key: " + result.getTestName());
+				System.out.println("Driver: " + driver);
+				//test.log(LogStatus.INFO, test.addBase64ScreenShot(new TestUtils(driver).addScreenShot()));
 				for (String group : result.getMethod().getGroups())
 					test.assignCategory(group);
 

@@ -7,7 +7,7 @@ public class GlobalValues {
 
 	public static final String CONFIG = System.getProperty("user.dir")+"/src/main/resources/config.properties";
 
-	public static Map<Object, Object> globalMap = new HashMap<Object, Object>();
+	private static Map<Object, Object> globalMap = new HashMap<Object, Object>();
 	
 	public static Object getGlobalMapvalue(Object key) {
 		return globalMap.get(key);

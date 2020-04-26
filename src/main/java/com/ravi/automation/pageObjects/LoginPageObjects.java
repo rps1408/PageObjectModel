@@ -29,20 +29,20 @@ public class LoginPageObjects extends BasePageObject{
 	
 	public void loginHome(String loginID, String passwd) {
 		try {
-			Assert.assertEquals(findElement(user_label).getText(), "Username");
+			Assert.assertEquals(driver.findElement(user_label).getText(), "Username");
 			test.log(LogStatus.PASS, "Username label is correct.");
-			Assert.assertEquals(findElement(password_label).getText(), "Password");
+			Assert.assertEquals(driver.findElement(password_label).getText(), "Password");
 			test.log(LogStatus.PASS, "Password label is correct.");
-			Assert.assertEquals(findElement(subit_button).getText(), "Login");
+			Assert.assertEquals(driver.findElement(subit_button).getText(), "Login");
 			test.log(LogStatus.PASS, "Login button label is correct.");
-			Assert.assertTrue(findElement(OMV_logo).isDisplayed());
+			Assert.assertTrue(driver.findElement(OMV_logo).isDisplayed());
 			test.log(LogStatus.PASS, "Logo is visible.");
 		} catch (AssertionError e) {
 			test.log(LogStatus.FAIL, e.getMessage());
 			e.printStackTrace();
 		}
-		findElement(user_input).sendKeys(loginID);
-		findElement(password_input).sendKeys(passwd);
+		driver.findElement(user_input).sendKeys(loginID);
+		driver.findElement(password_input).sendKeys(passwd);
 	}
 	
 }

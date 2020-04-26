@@ -2,6 +2,7 @@ package com.ravi.automation.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,8 +65,8 @@ public class TestUtils{
 	@DataProvider(name = "OMV_Data")
 	public static Object[][] testData(ITestContext context){
 		String sheetName = context.getName();
+		
 		Map<String, String> testData;
-		//Object[][] data2;
 		Object[][] data = null;
 		try {
 			Sheet sheet = ExcelUtils.getSheetByName(sheetName);
@@ -90,10 +91,13 @@ public class TestUtils{
 			e.printStackTrace();
 		}
 		
-		/*
-		 * data2 = new Object[1][2]; data2[0][0] = "admin"; data2[0][1] = "xxxxxxxx";
-		 */
-		
 		return data;
+	}
+
+	public void switchToNewTab() {
+		String oldTab = driver.getWindowHandle();
+		ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
+		tabs.remove(oldTab);
+		driver.switchTo().window(tabs.get(0));
 	}
 }

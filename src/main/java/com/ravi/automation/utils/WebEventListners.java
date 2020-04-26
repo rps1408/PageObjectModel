@@ -3,17 +3,21 @@ package com.ravi.automation.utils;
 import java.util.Arrays;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class WebEventListners implements WebDriverEventListener {
 	
 	ExtentTest test;
-	
+	JavascriptExecutor js;
 	public WebEventListners(ExtentTest test) {
 		this.test = test;
 	}
@@ -93,8 +97,18 @@ public class WebEventListners implements WebDriverEventListener {
 
 	@Override
 	public void beforeFindBy(By by, WebElement element, WebDriver driver) {
-		// TODO Auto-generated method stub
-
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		try {
+			element = wait.until(ExpectedConditions.presenceOfElementLocated(by));
+			if (!element.isDisplayed()) {
+				js = (JavascriptExecutor) driver;
+				js.executeScript("arguments[0].scrollIntoView(true)", element);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		
 	}
 
 	@Override
@@ -112,7 +126,7 @@ public class WebEventListners implements WebDriverEventListener {
 	@Override
 	public void afterClickOn(WebElement element, WebDriver driver) {
 		// TODO Auto-generated method stub
-
+		test.log(LogStatus.INFO, element.getText() + " is clicked.");
 	}
 
 	@Override
